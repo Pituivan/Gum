@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using ToolsUtilities;
 using Gum.Managers;
 using Gum.Commands;
+using Gum.Logic.FileWatch;
 using Gum.Services;
 using Gum.Services.Dialogs;
 
@@ -33,6 +34,8 @@ internal class CodeGenerationService
     public void GenerateCodeForElement(ElementSave selectedElement, Models.CodeOutputElementSettings elementSettings, CodeOutputProjectSettings codeOutputProjectSettings, bool showPopups,
         bool checkForMissing = true)
     {
+        using var filePauser = FileWatchManager.Self.Pause();
+        
         var generatedFileName = _codeGenerationFileLocationsService.GetGeneratedFileName(selectedElement, elementSettings, codeOutputProjectSettings);
 
         ////////////////////////////////////////Early Out/////////////////////////////

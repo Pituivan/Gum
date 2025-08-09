@@ -7,6 +7,24 @@ using ToolsUtilities;
 
 namespace Gum.Logic.FileWatch;
 
+#region FileWatchPauser
+public class FileWatchPauser : IDisposable
+{
+    private readonly FileSystemWatcher watcher;
+
+    public FileWatchPauser(FileSystemWatcher watcher)
+    {
+        this.watcher = watcher;
+        watcher.EnableRaisingEvents = false;
+    }
+
+    public void Dispose()
+    {
+        watcher.EnableRaisingEvents = true;
+    }
+}
+#endregion
+
 public class FileWatchManager : Singleton<FileWatchManager>
 {
     #region Fields/Properties
@@ -89,10 +107,19 @@ public class FileWatchManager : Singleton<FileWatchManager>
 
         fileSystemWatcher.EnableRaisingEvents = true;
     }
-
+    
     public void Disable()
     {
         fileSystemWatcher.EnableRaisingEvents = false;
+    }
+    
+    /// <returns>
+    /// A disposable scope during which file watching is paused.
+    /// File watching automatically resumes when this is disposed.
+    /// </returns>
+    public IDisposable Pause()
+    {
+        return new FileWatchPauser(fileSystemWatcher);
     }
 
     private void HandleRename(object sender, RenamedEventArgs e)
