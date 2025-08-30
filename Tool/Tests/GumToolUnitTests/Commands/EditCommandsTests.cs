@@ -30,6 +30,7 @@ public class EditCommandsTests
             new Mock<IRenameLogic>().Object,
             new Mock<IUndoManager>().Object,
             dialogService.Object,
+            new Mock<IElementCommands>().Object,
             new Mock<IFileCommands>().Object,
             _projectCommands.Object,
             new Mock<IGuiCommands>().Object,
